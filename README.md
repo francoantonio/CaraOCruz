@@ -64,7 +64,7 @@ Sin ese archivo, `bundleRelease` genera un AAB sin firmar. La clave y sus contra
 ## Roadmap
 
 **Publicación 1.0**
-- [ ] Publicar la política de privacidad en una URL pública.
+- [x] Publicar la política de privacidad en una URL pública (GitHub Pages).
 - [ ] Crear la app en Play Console y cargar ficha, imágenes y AAB.
 - [ ] Completar seguridad de datos, clasificación de contenido, público objetivo y anuncios.
 - [ ] Prueba cerrada (12 testers durante 14 días) y pase a producción.
