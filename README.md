@@ -58,7 +58,8 @@ Sin ese archivo, `bundleRelease` genera un AAB sin firmar. La clave y sus contra
 
 ## Privacidad
 
-Ver [store/politica-privacidad.md](store/politica-privacidad.md).
+- Versión publicada: https://francoantonio.github.io/CaraOCruz/privacidad.html
+- Texto en el repositorio: [store/politica-privacidad.md](store/politica-privacidad.md)
 
 ## Roadmap
 

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cara o Cruz y Dados</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #1b1b1b;
+      --muted: #555555;
+      --accent: #1E5B4F;
+      --surface: #f3f7f6;
+      --border: #d6e3df;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121212;
+        --text: #e6e6e6;
+        --muted: #b0b0b0;
+        --accent: #8FD3C1;
+        --surface: #1c2422;
+        --border: #2f3d3a;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    header img {
+      width: 80px;
+      height: 80px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    h1 {
+      color: var(--accent);
+      font-size: 1.75rem;
+      line-height: 1.2;
+      margin: 0;
+    }
+    h2 {
+      color: var(--accent);
+      font-size: 1.2rem;
+      margin: 24px 0 8px;
+    }
+    p { margin: 0 0 12px; }
+    .tagline {
+      font-size: 1.05rem;
+      color: var(--muted);
+      margin: 0 0 8px;
+    }
+    ul {
+      margin: 0 0 12px;
+      padding-left: 20px;
+    }
+    li { margin: 6px 0; }
+    .note {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin: 16px 0;
+    }
+    a { color: var(--accent); }
+    footer {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    footer p { margin: 4px 0; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <img src="icon-512.png" alt="Ícono de Cara o Cruz y Dados" width="80" height="80">
+      <h1>Cara o Cruz y Dados</h1>
+    </header>
+
+    <p class="tagline">Tirá una moneda o un dado en un toque. Simple, rápido y sin anuncios.</p>
+    <p>¿No se ponen de acuerdo? ¿Quién empieza? ¿Qué pedimos para cenar? Dejalo en manos del azar.</p>
+
+    <h2>Funciones</h2>
+    <ul>
+      <li>Tirar una moneda con animación de giro y ver si salió Cara o Cruz.</li>
+      <li>Tirar un dado de 6 caras y ver el resultado al instante.</li>
+      <li>Consultar el historial de tus últimas 10 tiradas.</li>
+      <li>Ver cuántas caras y cruces salieron, o el promedio de tus tiradas de dado.</li>
+      <li>Usarla en modo claro u oscuro, según la configuración de tu teléfono.</li>
+    </ul>
+
+    <div class="note">
+      <p style="margin:0">Sin anuncios, sin registro y sin permisos especiales. Funciona sin conexión a internet y no recopila ningún dato.</p>
+    </div>
+
+    <p><a href="privacidad.html">Política de privacidad</a></p>
+
+    <footer>
+      <p>Contacto: <a href="mailto:antoniofranco.dev@gmail.com">antoniofranco.dev@gmail.com</a></p>
+    </footer>
+  </main>
+</body>
+</html>
