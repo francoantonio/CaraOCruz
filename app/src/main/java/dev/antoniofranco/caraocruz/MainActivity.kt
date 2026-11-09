@@ -4,7 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -20,7 +23,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
@@ -32,6 +36,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -111,6 +116,7 @@ private fun CoinScreen() {
     val rotation = remember { Animatable(if (result == false) 180f else 0f) }
     var busy by remember { mutableStateOf(false) }
     val history = rememberSaveable(saver = listSaver(), init = { mutableStateListOf<Boolean>() })
+    var rolls by rememberSaveable { mutableIntStateOf(0) } // id de la última tirada
     val heads = stringResource(R.string.heads)
     val tails = stringResource(R.string.tails)
 
@@ -149,12 +155,14 @@ private fun CoinScreen() {
                 val end = 360f * 5 + if (isHeads) 0f else 180f
                 rotation.animateTo(end, tween(1200, easing = FastOutSlowInEasing))
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                rolls++
                 history.add(0, isHeads)
                 while (history.size > HISTORY_SIZE) history.removeAt(history.lastIndex)
                 busy = false
             }
         },
         historyItems = history.map { if (it) heads else tails },
+        latestId = rolls,
         stats = stringResource(R.string.stats_coin, history.count { it }, history.count { !it }),
         onClear = { history.clear() },
     )
@@ -192,6 +200,7 @@ private fun DiceScreen() {
     var value by rememberSaveable { mutableIntStateOf(0) } // 0 = sin tirar
     var busy by remember { mutableStateOf(false) }
     val history = rememberSaveable(saver = intListSaver(), init = { mutableStateListOf<Int>() })
+    var rolls by rememberSaveable { mutableIntStateOf(0) } // id de la última tirada
 
     ScreenLayout(
         visual = {
@@ -217,12 +226,14 @@ private fun DiceScreen() {
                 value = final
                 delay(100)
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                rolls++
                 history.add(0, final)
                 while (history.size > HISTORY_SIZE) history.removeAt(history.lastIndex)
                 busy = false
             }
         },
         historyItems = history.map { it.toString() },
+        latestId = rolls,
         stats = if (history.isEmpty()) "" else
             "Promedio: %.1f".format(history.average()),
         onClear = { history.clear() },
@@ -265,6 +276,7 @@ private fun ScreenLayout(
     busy: Boolean,
     onAction: () -> Unit,
     historyItems: List<String>,
+    latestId: Int,
     stats: String,
     onClear: () -> Unit,
 ) {
@@ -294,17 +306,17 @@ private fun ScreenLayout(
                     Text(stringResource(R.string.clear))
                 }
             }
+            val listState = rememberLazyListState()
+            // Al llegar una tirada nueva, volver al principio para que se vea
+            LaunchedEffect(latestId) { listState.animateScrollToItem(0) }
             LazyRow(
                 Modifier.fillMaxWidth(),
+                state = listState,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                items(historyItems) { item ->
-                    Surface(
-                        shape = MaterialTheme.shapes.small,
-                        color = MaterialTheme.colorScheme.secondaryContainer,
-                    ) {
-                        Text(item, Modifier.padding(horizontal = 12.dp, vertical = 6.dp))
-                    }
+                // Clave estable por tirada: la nueva entra animada y las demás se desplazan
+                itemsIndexed(historyItems, key = { i, _ -> latestId - i }) { i, item ->
+                    HistoryChip(item, isNewest = i == 0, Modifier.animateItem())
                 }
             }
             Spacer(Modifier.height(8.dp))
@@ -312,6 +324,30 @@ private fun ScreenLayout(
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         }
+    }
+}
+
+/** Ficha del historial: la más reciente resaltada y con un "pop" al aparecer. */
+@Composable
+private fun HistoryChip(text: String, isNewest: Boolean, modifier: Modifier = Modifier) {
+    val colors = MaterialTheme.colorScheme
+    val bg by animateColorAsState(
+        if (isNewest) colors.primary else colors.secondaryContainer, tween(500), label = "chipBg")
+    val fg by animateColorAsState(
+        if (isNewest) colors.onPrimary else colors.onSecondaryContainer, tween(500), label = "chipFg")
+    val scale = remember { Animatable(if (isNewest) 0.3f else 1f) }
+    LaunchedEffect(Unit) {
+        scale.animateTo(1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMediumLow))
+    }
+    Surface(
+        shape = MaterialTheme.shapes.small,
+        color = bg,
+        contentColor = fg,
+        modifier = modifier.graphicsLayer { scaleX = scale.value; scaleY = scale.value },
+    ) {
+        Text(text, Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            fontWeight = if (isNewest) FontWeight.Bold else FontWeight.Normal)
     }
 }
 
