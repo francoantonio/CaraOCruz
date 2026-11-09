@@ -1,0 +1,17 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/app/build
+/captures
+.kotlin
+*.jks
+*.keystore
+
+# Artefactos de compilación sueltos
+*.aab
+*.apk
+
+# La configuración de firma vive fuera del repo, en ~/keys/ (no copiarla acá)
